@@ -4,7 +4,7 @@ pipeline {
     tools {
         jdk 'jdk17'
         maven 'maven3'
-         nodejs 'nodejs18' 
+        nodejs 'nodejs18'
     }
 
     environment {
@@ -13,56 +13,48 @@ pipeline {
         IMAGE_NAME = 'stationski'
     }
 
- stages {
-          
-                stage('Git Checkout Frontend') {
-                    steps {
-                        git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/RaniaWachene1/SnowMountain.git'
-                    }
-                }
-                stage('Git Checkout Backend') {
-                    steps {
-                        git branch: 'RaniaWachene', credentialsId: 'git-cred', url: 'https://github.com/nada176/Devops.git'
-                    }
-                }
-            
-    stage('Frontend Build') {
-            stages {
-                stage('Install Frontend Dependencies') {
-                    steps {
-                            sh 'npm install'  // Install dependencies
-                        }
-                    }
-                }
-
-                stage('Build Frontend') {
-                    steps {
-                            sh 'npm run build'  // Build the frontend (adjust as per your project structure)
-                        }
-                    }
-                }
+    stages {
+        stage('Git Checkout Frontend') {
+            steps {
+                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/RaniaWachene1/SnowMountain.git'
             }
-    }
+        }
 
+        stage('Git Checkout Backend') {
+            steps {
+                git branch: 'RaniaWachene', credentialsId: 'git-cred', url: 'https://github.com/nada176/Devops.git'
+            }
+        }
+
+        stage('Install Frontend Dependencies') {
+            steps {
+                sh 'npm install'  // Install frontend dependencies
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                sh 'npm run build'  // Build the frontend
+            }
+        }
 
         stage('Backend - Compile') {
             steps {
                 sh "mvn clean compile"
             }
         }
-      stage('Tests - JUnit/Mockito') {
+
+        stage('Tests - JUnit/Mockito') {
             steps {
                 sh 'mvn test'
             }
         }
 
         stage('JaCoCo Code Coverage') {
-                    steps {
-                        sh 'mvn jacoco:prepare-agent test jacoco:report'
-                    }
-                }
-
-
+            steps {
+                sh 'mvn jacoco:prepare-agent test jacoco:report'
+            }
+        }
 
         stage('File System Scan') {
             steps {
@@ -80,7 +72,6 @@ pipeline {
                         -Dsonar.java.binaries=target/classes \
                         -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                     """
-
                 }
             }
         }
@@ -104,7 +95,6 @@ pipeline {
                             --prettyPrint \
                             --nvdApiKey ${NVD_API_KEY}
                         ''', odcInstallation: 'DC'
-
                         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
                     }
                 }
@@ -147,7 +137,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker-compose down || true' // Stops any previous containers
-                    sh 'docker-compose up -d' // Starts your MySQL and backend services
+                    sh 'docker-compose up -d' // Starts MySQL and backend services
                 }
             }
         }
@@ -185,9 +175,7 @@ pipeline {
                     attachmentsPattern: '**/dependency-check-report.xml,**/trivy-fs-report.html,**/trivy-image-report.html'
                 )
             }
-            archiveArtifacts artifacts: '**/dependency-check-report.xml', allowEmptyArchive: true
-            archiveArtifacts artifacts: '**/trivy-fs-report.html', allowEmptyArchive: true
-            archiveArtifacts artifacts: '**/trivy-image-report.html', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**/*.xml, **/*.html', allowEmptyArchive: true
         }
     }
 }
