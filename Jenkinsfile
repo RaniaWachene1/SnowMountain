@@ -25,6 +25,11 @@ pipeline {
                 git branch: 'RaniaWachene', credentialsId: 'git-cred', url: 'https://github.com/nada176/Devops.git'
             }
         }
+stage('Cleanup') {
+    steps {
+        cleanWs()  // Clean the Jenkins workspace before running the job
+    }
+}
 
         stage('Install Frontend Dependencies') {
             steps {
