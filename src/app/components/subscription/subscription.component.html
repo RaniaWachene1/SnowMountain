@@ -1,0 +1,168 @@
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Subscriptions</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico" />
+    <!-- Plugin css -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/fonts/flaticon.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/animate.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/swiper.min.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/lightcase.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/jquery.nstSlider.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/flexslider.css" media="all" />
+    <!-- Own style css -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" media="all" />
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header class="header-style-2">
+        <div class="bg-main-menu menu-scroll">
+            <div class="container">
+                <div class="row">
+                    <div class="main-menu">
+                        <div class="main-menu-bottom">
+                            <div class="navbar-header">
+                                <a class="navbar-brand" href="index.html">
+                                    <img src="assets/images/snow.png" alt="logo" class="img-responsive" style="width: 90px; height: auto;" />
+                                </a>
+                                <button type="button" class="navbar-toggler collapsed d-lg-none" data-bs-toggle="collapse" data-bs-target="#bs-example-navbar-collapse-1" aria-controls="bs-example-navbar-collapse-1" aria-expanded="false">
+                                    <span class="navbar-toggler-icon">
+                                        <i class="fa fa-bars"></i>
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="main-menu-area">
+                                <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1">
+                                    <ul>
+                                        <li><a href="#" class="active">HOME</a></li>
+                                        <li><a href="piste">Piste</a></li>
+                                        <li><a href="course">Course</a></li>
+                                        <li><a href="instructor">Instructor</a></li>
+                                        <li><a href="skier">Skier</a></li>
+                                        <li><a href="subscription">Subscription</a></li>
+                                        <li><a href="register">Sign up</a></li>
+                                        <a href="login" class="btn btn-default">Login</a>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Subscription Section -->
+    <section class="bg-recent-project">
+        <div class="container">
+            <div class="row">
+                <div class="recent-project">
+                    <div class="section-header-container" style="background-image: url('assets/images/11.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; box-shadow: inset 0 0 0 1000px rgba(173, 173, 173, 0.5);">
+                        <div class="container" style="padding: 100px 20px; text-align: center; color: #fff;">
+                            <h2 style="font-size: 48px; font-weight: bold; margin-bottom: 10px;">Our Subscriptions</h2>
+                        </div>
+                    </div>
+
+                    <!-- Button to trigger modal -->
+                    <button class="btn btn-primary mt-4" (click)="openModal()">Create Subscription</button>
+
+                    <!-- Modal for creating or updating subscription -->
+                    <div class="modal" tabindex="-1" *ngIf="isModalOpen" style="display:block;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">{{ isUpdateMode ? 'Update' : 'Create' }} Subscription</h5>
+                                    <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form [formGroup]="createSubscriptionForm" (ngSubmit)="submitSubscription()">
+                                        <div class="form-group">
+                                            <input type="text" id="numSub" placeholder="Subscription Number" formControlName="numSub" class="form-control" [readonly]="isUpdateMode">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="date" id="startDate" formControlName="startDate" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="date" id="endDate" formControlName="endDate" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" id="price" placeholder="Price" formControlName="price" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <select id="typeSub" formControlName="typeSub" class="form-control">
+                                                <option value="ANNUAL">Annual</option>
+                                                <option value="MONTHLY">Monthly</option>
+                                                <option value="SEMESTRIEL">Semestrial</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">{{ isUpdateMode ? 'Update' : 'Save' }} Subscription</button>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subscription Filters -->
+                    <div class="container mt-4">
+                        <div class="row">
+                            <!-- Filter by Subscription Type -->
+                            <div class="col-md-6">
+                                <h5>Filter by Subscription Type</h5>
+                                <div class="form-group">
+                                    <label for="subscriptionType">Subscription Type</label>
+                                    <select id="subscriptionType" class="form-control" [(ngModel)]="selectedType">
+                                        <option value="ALL">All</option>
+                                        <option value="MONTHLY">Monthly</option>
+                                        <option value="ANNUAL">Annual</option>
+                                        <option value="SEMESTRIEL">Semestrial</option>
+                                    </select>
+                                    <button class="btn btn-primary mt-2" (click)="filterByType()">Filter</button>
+                                </div>
+                            </div>
+
+                            <!-- Filter by Date Range -->
+                            <div class="col-md-6">
+                                <h5>Filter by Date Range</h5>
+                                <div class="form-group">
+                                    <label for="startDate">Start Date</label>
+                                    <input type="date" id="startDate" class="form-control" [(ngModel)]="startDate">
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label for="endDate">End Date</label>
+                                    <input type="date" id="endDate" class="form-control" [(ngModel)]="endDate">
+                                </div>
+                                <button class="btn btn-primary mt-2" (click)="filterByDates()">Filter by Dates</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Display Subscriptions -->
+                    <div class="container mt-4">
+                        <h3>Subscription List</h3>
+                        <ul class="list-group" *ngIf="subscriptions.length > 0">
+                            <li class="list-group-item" *ngFor="let subscription of subscriptions">
+                                <strong>Type:</strong> {{ subscription.typeSub }} |
+                                <strong>Start Date:</strong> {{ subscription.startDate }} |
+                                <strong>End Date:</strong> {{ subscription.endDate }} |
+                                <strong>Price:</strong> {{ subscription.price | currency }}
+                                <button class="btn btn-warning float-right ml-2" (click)="updateSubscription(subscription)">Update</button>
+                            </li>
+                        </ul>
+                        <div *ngIf="subscriptions.length === 0">
+                            <p>No subscriptions found.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>

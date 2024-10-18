@@ -1,0 +1,10 @@
+.slider-item img {
+    filter: none !important; /* Remove blur */
+    opacity: 1 !important; /* Ensure the image is fully visible */
+}
+
+.slider-content-area::before {
+    content: none !important; /* Remove any overlay */
+    filter: none !important;
+    opacity: 1 !important;
+}

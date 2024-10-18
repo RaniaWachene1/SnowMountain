@@ -1,0 +1,218 @@
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home 01</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico" />
+    <!-- Plugin css -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/fonts/flaticon.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/animate.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/swiper.min.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/lightcase.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/jquery.nstSlider.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/flexslider.css" media="all" />
+
+    <!-- own style css -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/rtl.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/responsive.css" media="all" />
+
+</head>
+
+<body>
+
+ 
+
+        <!-- End Pre-Loader -->
+        <header class="header-style-2">
+           
+            <!-- .bg-header-top -->
+            <!-- Start Menu -->
+            <div class="bg-main-menu menu-scroll">
+                <div class="container">
+                    <div class="row">
+                        <div class="main-menu">
+                            <div class="main-menu-bottom">
+                                <div class="navbar-header">
+									<a class="navbar-brand" href="index.html">
+										<img src="assets/images/snow.png" alt="logo" class="img-responsive" style="width: 90px; height: auto;" />
+									</a>
+									
+                                    <button type="button" class="navbar-toggler collapsed d-lg-none" data-bs-toggle="collapse" data-bs-target="#bs-example-navbar-collapse-1" aria-controls="bs-example-navbar-collapse-1" aria-expanded="false">
+                                        <span class="navbar-toggler-icon">
+                                            <i class="fa fa-bars"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="main-menu-area">
+                                    <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1">
+                                        <ul>
+                                            <li>
+                                                <a href="#" class="active">HOME</a>
+                                            
+                                            </li>
+                                            <li><a href="piste">Piste</a></li>
+                                            <li><a href="course">Course</a></li>
+                                            <li><a href="instructor">Instructor</a></li>
+                                            <li><a href="skier">Skier</a></li>
+                                            <li><a href="subscription">Subscription</a></li>
+                                            <li>
+                                                <a href="register">Sign up</a>
+                                            
+                                            </li>
+											<a href="login" class="btn btn-default">Login</a>
+                                        </ul>
+                                        <div class="menu-right-option pull-right">
+                                            <div class="cart-option">
+                                             
+                                                <!-- .cart-icon -->
+                                             
+                                                <!-- .cart--->
+                                            </div>
+                                            <!-- .cart-option -->
+
+                                            <div class="search-box">
+                                                <i class="fa fa-search first_click" aria-hidden="true" style="display: block;"></i>
+                                                <i class="fa fa-times second_click" aria-hidden="true" style="display: none;"></i>
+                                            </div>
+                                            <div class="search-box-text">
+                                                <form action="https://aminurislam.com/labartisan/greenforest-demo/greenforest/search">
+                                                    <input type="text" name="search" id="all-search" placeholder="Search Here">
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <!-- .header-search-box -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+
+
+
+<section class="bg-recent-project">
+
+    <div class="container">
+        <div class="row">
+            <div class="recent-project">
+                <div class="section-header-container" style="position: relative; width: 100vw; margin-left: calc(-50vw + 50%); background-image: url('assets/images/11.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; box-shadow: inset 0 0 0 1000px rgba(173, 173, 173, 0.5);">
+                    <div class="container" style="padding: 100px 20px; text-align: center; color: #fff;">
+                        <h2 style="font-size: 48px; font-weight: bold; margin-bottom: 10px;">Our Courses</h2>
+                    </div>
+                </div>
+        
+            <br>
+      
+<!-- Button to trigger modal -->
+<button class="btn btn-primary" (click)="openModal()">Create Course</button>
+
+<!-- Modal -->
+<div class="modal" tabindex="-1" *ngIf="isModalOpen" style="display:block;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create Course</h5>
+          <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="createCourseForm" (ngSubmit)="submitCourse()">
+                <div class="form-group">
+                   <input type="text" id="courseName" placeholder="Course Name" formControlName="courseName" class="form-control">
+                </div>
+                <div class="form-group">
+                   <input type="number" id="courseLevel" placeholder="Course Level" formControlName="courseLevel" class="form-control">
+                </div>
+                <div class="form-group">
+                   <select id="typeCourse" formControlName="typeCourse" class="form-control">
+                      <option *ngFor="let type of typeCourses" [value]="type">{{ type }}</option>
+                   </select>
+                </div>
+                <div class="form-group">
+                    <select id="supportType" formControlName="supportType" class="form-control">
+                      <option *ngFor="let support of supportTypes" [value]="support">{{ support }}</option>
+                    </select>
+                  </div>
+                  
+            
+                <div class="form-group">
+                   <input type="number" id="coursePrice" placeholder="Course Price" formControlName="coursePrice" class="form-control">
+                </div>
+                <div class="form-group">
+                   <input type="text" id="courseTimeSlot" placeholder="Course Time Slot" formControlName="courseTimeSlot" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary">Save Course</button>
+             </form>
+             
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+          <button type="button" class="btn btn-primary" (click)="submitCourse()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+                
+
+                <div id="filters" class="button-group">
+                    <button class="button is-checked" data-filter="*">Show All</button>
+                    <button class="button" data-filter=".beginner">Beginner</button>
+                    <button class="button" data-filter=".intermediate">Intermediate</button>
+                    <button class="button" data-filter=".advanced">Advanced</button>
+                    <button class="button" data-filter=".expert">Expert</button>
+                </div>
+
+                <div class="portfolio-items">
+                    <div class="item" *ngFor="let course of courses">
+                        <div class="item-inner">
+                            <div class="portfolio-img">
+                                <div class="overlay-project"></div>
+                                <!-- .overlay-project -->
+                                <img src="assets/images/courses/course-placeholder.jpg" alt="course image">
+                                <ul class="project-link-option">
+                                    <li class="project-link">
+                                        <a href="course_single.html">
+                                            <i class="fa fa-link" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    <li class="project-search">
+                                        <a href="assets/images/courses/course-placeholder.jpg" data-rel="lightcase:myCollection">
+                                            <i class="fa fa-search-plus" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- /.portfolio-img -->
+
+                            <div class="recent-project-content">
+                                <h4><a href="assets/course_single.html">{{ course.typeCourse | titlecase }} Ski Lessons</a></h4>
+                                <p>Level: {{ course.level }} <br> Support: {{ course.support }} <br> Price: {{ course.price | currency }}</p>
+                                <p>Time Slot: {{ course.timeSlot }}</p>
+                            </div>
+                            <!-- .recent-project-content -->
+                        </div>
+                        <!-- .item-inner -->
+                    </div>
+                    <!-- .item -->
+                </div>
+                <!-- .portfolio-items -->
+            </div>
+            <!-- .recent-project -->
+        </div>
+        <!-- .row -->
+    </div>
+    <!-- .container -->
+</section>
+<!-- End Course Section -->
+</body>
