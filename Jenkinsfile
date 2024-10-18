@@ -13,7 +13,7 @@ pipeline {
         IMAGE_NAME = 'stationski'
     }
 
-     stages {
+ stages {
         stage('Git Checkout') {
             parallel {
                 stage('Git Checkout Frontend') {
@@ -28,33 +28,15 @@ pipeline {
                 }
             }
         }
-
-    stage('Install Dependencies') {
-            parallel {
-                stage('Install Backend Dependencies') {
-                    steps {
-                        cache(path: '.m2', key: 'maven-cache-${env.BRANCH_NAME}', cache: true) {
-                            sh 'mvn dependency:resolve'
-                        }
-                    }
-                }
-                stage('Install Frontend Dependencies') {
-                    steps {
-                        dir('frontend') {
-                            cache(path: 'node_modules', key: 'npm-cache-${env.BRANCH_NAME}', cache: true) {
-                                sh 'npm install'
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        stage('Compile') {
+ stage('Backend - Compile') {
             steps {
-                sh "mvn clean compile"
+                dir('backend') {  // Ensure you’re in the backend directory
+                    sh 'mvn clean compile'
+                }
             }
         }
+
+    
       stage('Tests - JUnit/Mockito') {
             steps {
                 sh 'mvn test'
@@ -151,7 +133,6 @@ pipeline {
         stage('Docker Compose Backend & MySQL') {
             steps {
                 script {
-                    // Ensure MySQL is not already running on the host machine
                     sh 'docker-compose down || true' // Stops any previous containers
                     sh 'docker-compose up -d' // Starts your MySQL and backend services
                 }
