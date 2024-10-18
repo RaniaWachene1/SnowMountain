@@ -32,7 +32,7 @@ pipeline {
 stage('Install Frontend Dependencies') {
     steps {
         dir('Station_Ski/Station_Ski') {  // Change to correct directory where package.json is located
-            sh 'npm install'  // Install frontend dependencies
+            sh 'npm init'  // Install frontend dependencies
         }
     }
 }
