@@ -26,7 +26,25 @@ pipeline {
                     }
                 }
             
-    
+    stage('Frontend Build') {
+            stages {
+                stage('Install Frontend Dependencies') {
+                    steps {
+                        dir('frontend') { // Change directory to frontend
+                            sh 'npm install'  // Install dependencies
+                        }
+                    }
+                }
+
+                stage('Build Frontend') {
+                    steps {
+                        dir('frontend') { 
+                            sh 'npm run build'  // Build the frontend (adjust as per your project structure)
+                        }
+                    }
+                }
+            }
+    }
 
 
         stage('Backend - Compile') {
