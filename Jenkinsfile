@@ -29,7 +29,7 @@ pipeline {
     
       stage('Install Frontend Dependencies') {
     steps {
-        dir('Station_Ski') {  // Ensure you're in the correct directory
+        dir('Station_Ski/Station_Ski')   // Ensure you're in the correct directory
             sh 'npm install'  // Install frontend dependencies
         }
     }
