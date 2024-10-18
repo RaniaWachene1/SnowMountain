@@ -28,15 +28,13 @@ pipeline {
                 }
             }
         }
- stage('Backend - Compile') {
+
+
+        stage('Backend - Compile') {
             steps {
-                dir('backend') {  // Ensure you’re in the backend directory
-                    sh 'mvn clean compile'
-                }
+                sh "mvn clean compile"
             }
         }
-
-    
       stage('Tests - JUnit/Mockito') {
             steps {
                 sh 'mvn test'
