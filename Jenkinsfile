@@ -14,7 +14,7 @@ pipeline {
     }
 
  stages {
-=          
+          
                 stage('Git Checkout Frontend') {
                     steps {
                         git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/RaniaWachene1/SnowMountain.git'
