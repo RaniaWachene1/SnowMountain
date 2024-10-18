@@ -17,7 +17,6 @@ pipeline {
         stage('Git Checkout Frontend') {
             steps {
                 git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/RaniaWachene1/SnowMountain.git'
-                sh 'ls -la'
             }
         }
 
@@ -28,11 +27,14 @@ pipeline {
             }
         }
     
-        stage('Install Frontend Dependencies') {
-            steps {
-                sh 'npm install'  // Install frontend dependencies
-            }
+      stage('Install Frontend Dependencies') {
+    steps {
+        dir('Station_Ski') {  // Ensure you're in the correct directory
+            sh 'npm install'  // Install frontend dependencies
         }
+    }
+}
+
 
         stage('Build Frontend') {
             steps {
