@@ -4,6 +4,7 @@ pipeline {
     tools {
         jdk 'jdk17'
         maven 'maven3'
+         nodejs 'nodejs18' 
     }
 
     environment {
@@ -12,19 +13,43 @@ pipeline {
         IMAGE_NAME = 'stationski'
     }
 
-    stages {
-
-        stage('Git Checkout Frontend') {
-            steps {
-                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/RaniaWachene1/SnowMountain.git'
+     stages {
+        stage('Git Checkout') {
+            parallel {
+                stage('Git Checkout Frontend') {
+                    steps {
+                        git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/RaniaWachene1/SnowMountain.git'
+                    }
+                }
+                stage('Git Checkout Backend') {
+                    steps {
+                        git branch: 'RaniaWachene', credentialsId: 'git-cred', url: 'https://github.com/nada176/Devops.git'
+                    }
+                }
             }
         }
-        stage('Git Checkout Backend') {
-            steps {
-                git branch: 'RaniaWachene', credentialsId: 'git-cred', url: 'https://github.com/nada176/Devops.git'
+
+    stage('Install Dependencies') {
+            parallel {
+                stage('Install Backend Dependencies') {
+                    steps {
+                        cache(path: '.m2', key: 'maven-cache-${env.BRANCH_NAME}', cache: true) {
+                            sh 'mvn dependency:resolve'
+                        }
+                    }
+                }
+                stage('Install Frontend Dependencies') {
+                    steps {
+                        dir('frontend') {
+                            cache(path: 'node_modules', key: 'npm-cache-${env.BRANCH_NAME}', cache: true) {
+                                sh 'npm install'
+                            }
+                        }
+                    }
+                }
             }
         }
-
+        
         stage('Compile') {
             steps {
                 sh "mvn clean compile"
