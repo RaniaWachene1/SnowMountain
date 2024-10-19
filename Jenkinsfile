@@ -40,7 +40,14 @@ pipeline {
                 }
             }
         }
-
+        stage('Update Version') {
+            steps {
+                script {
+                    def version = "1.0.0.${env.BUILD_NUMBER}"
+                    sh "mvn versions:set -DnewVersion=${version} -DgenerateBackupPoms=false"
+                }
+            }
+        }
         // Backend Compilation
         stage('Backend -  Compile') {
             steps {
