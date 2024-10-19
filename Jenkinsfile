@@ -27,7 +27,11 @@ pipeline {
             }
         }
     
-
+stage('Verify Files in Workspace') {
+    steps {
+        sh 'pwd'  // Print the current working directory
+        sh 'ls -la'  // List files to ensure package.json is there
+    }
 
    stage('Build') {
             steps {
