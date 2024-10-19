@@ -52,7 +52,7 @@ pipeline {
     
  stage(' Frontend -  Build') {
             steps {
-                dir('Station_Ski') {  // Navigate to the directory with package.json
+                dir('') {  // Navigate to the directory with package.json
                    sh 'npm install'
                 sh 'ng build --prod' // Install dependencies
                 }
