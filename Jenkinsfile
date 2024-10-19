@@ -10,7 +10,7 @@ pipeline {
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
         NEXUS_DOCKER_REPO = '192.168.80.142:5000'
-        IMAGE_NAME = 'snowMountain'
+        IMAGE_NAME = 'snowmountain'
     }
   
     stages {
