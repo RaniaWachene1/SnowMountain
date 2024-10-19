@@ -42,7 +42,7 @@ pipeline {
         }
 
         // Backend Compilation
-        stage('Backend - Compile') {
+        stage('Backend -  Compile') {
             steps {
                 dir('backend') {
                     sh "mvn clean compile"
@@ -51,7 +51,7 @@ pipeline {
         }
 
         // Backend Tests
-        stage('Tests - JUnit/Mockito') {
+        stage('Backend Tests - JUnit/Mockito') {
             steps {
                 dir('backend') {
                     sh 'mvn test'
@@ -60,7 +60,7 @@ pipeline {
         }
 
         // JaCoCo Code Coverage
-        stage('JaCoCo Code Coverage') {
+        stage('Backend - JaCoCo Code Coverage') {
             steps {
                 dir('backend') {
                     sh 'mvn jacoco:prepare-agent test jacoco:report'
@@ -69,7 +69,7 @@ pipeline {
         }
 
         // File System Scan
-        stage('File System Scan') {
+        stage('Backend - File System Scan') {
             steps {
                 dir('backend') {
                     sh "trivy fs --format table -o trivy-fs-report.html ."
@@ -78,7 +78,7 @@ pipeline {
         }
 
         // SonarQube Analysis
-        stage('SonarQube Analysis') {
+        stage('Backend - SonarQube Analysis') {
             steps {
                 dir('backend') {
                     withSonarQubeEnv('sonar') {
@@ -97,14 +97,16 @@ pipeline {
         // Quality Gate
         stage('Quality Gate') {
             steps {
+                 dir('backend') {
                 script {
                     waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
                 }
+                 }
             }
         }
 
         // OWASP Dependency Check
-        stage('OWASP Dependency Check') {
+        stage('Backend -  OWASP Dependency Check') {
             steps {
                 dir('backend') {
                     script {
@@ -124,7 +126,7 @@ pipeline {
         }
 
         // Publish To Nexus
-        stage('Publish To Nexus') {
+        stage('Backend - Publish To Nexus') {
             steps {
                 dir('backend') {
                     withMaven(globalMavenSettingsConfig: 'global-settings', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
@@ -135,7 +137,7 @@ pipeline {
         }
 
         // Build & Tag Docker Image
-        stage('Build & Tag Docker Image') {
+        stage('Backend - Build & Tag Docker Image') {
             steps {
                 dir('backend') {
                     script {
@@ -146,7 +148,7 @@ pipeline {
         }
 
         // Login to Nexus Docker Registry
-        stage('Login to Nexus Docker Registry') {
+        stage('Backend - Login to Nexus Docker Registry') {
             steps {
                 dir('backend') {
                     script {
@@ -159,7 +161,7 @@ pipeline {
         }
 
         // Push Docker Image to Nexus
-        stage('Push Docker Image to Nexus') {
+        stage('Backend - Push Docker Image to Nexus') {
             steps {
                 dir('backend') {
                     script {
@@ -170,7 +172,7 @@ pipeline {
         }
 
         // Docker Image Scan
-        stage('Docker Image Scan') {
+        stage('Backend - Docker Image Scan') {
             steps {
                 dir('backend') {
                     sh "trivy image --timeout 15m --scanners vuln --format table -o trivy-image-report.html ${NEXUS_DOCKER_REPO}/${IMAGE_NAME}:latest"
