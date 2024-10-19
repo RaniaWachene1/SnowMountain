@@ -40,11 +40,13 @@ pipeline {
                 }
             }
         }
-        stage('Update Version') {
+     stage('Update Version') {
             steps {
-                script {
-                    def version = "1.0.0.${env.BUILD_NUMBER}"
-                    sh "mvn versions:set -DnewVersion=${version} -DgenerateBackupPoms=false"
+                dir('backend') {  // Change to the backend directory where the POM exists
+                    script {
+                        def version = "1.0.0.${env.BUILD_NUMBER}"
+                        sh "mvn versions:set -DnewVersion=${version} -DgenerateBackupPoms=false"
+                    }
                 }
             }
         }
