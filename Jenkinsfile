@@ -40,22 +40,23 @@ pipeline {
                 }
             }
         }
-         stage('Docker Compose ') {
-            steps {
-                dir('backend') {
-                    script {
-                        sh 'docker-compose down || true'
-                        sh 'docker-compose up -d'
-                    }
-                }
-            }
-        }
+        
      stage('Update Version') {
             steps {
                 dir('backend') {  // Change to the backend directory where the POM exists
                     script {
                         def version = "1.0.0.${env.BUILD_NUMBER}"
                         sh "mvn versions:set -DnewVersion=${version} -DgenerateBackupPoms=false"
+                    }
+                }
+            }
+        }
+         stage('Docker Compose ') {
+            steps {
+                dir('backend') {
+                    script {
+                        sh 'docker-compose down || true'
+                        sh 'docker-compose up -d'
                     }
                 }
             }
