@@ -14,11 +14,7 @@ pipeline {
     }
   
     stages {
-        stage('Clean Workspace') {
-            steps {
-                cleanWs()  // Clean the workspace before starting the job
-            }
-        }
+   
          stage('Git Checkout Frontend') {
             steps {
                 checkout([
@@ -35,12 +31,7 @@ pipeline {
             }
         }
 
-        stage('Verify Files in Workspace') {
-            steps {
-                sh 'pwd'
-                sh 'ls -la'  // Verify the presence of the angular.json and other necessary files
-            }
-        }
+     
       
 
         stage('Git Checkout Backend') {
@@ -52,7 +43,7 @@ pipeline {
     
  stage(' Frontend -  Build') {
             steps {
-                dir('') {  // Navigate to the directory with package.json
+                dir('Station_Ski') {  // Navigate to the directory with package.json
                    sh 'npm install'
                 sh 'ng build --prod' // Install dependencies
                 }
