@@ -12,17 +12,35 @@ pipeline {
         NEXUS_DOCKER_REPO = '192.168.80.142:5000'
         IMAGE_NAME = 'stationski'
     }
-  stage('Clean Workspace') {
+  
+    stages {
+        stage('Clean Workspace') {
             steps {
                 cleanWs()  // Clean the workspace before starting the job
             }
         }
-    stages {
-        stage('Git Checkout Frontend') {
+         stage('Git Checkout Frontend') {
             steps {
-                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/RaniaWachene1/SnowMountain.git', depth: 0
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: 'main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/RaniaWachene1/SnowMountain.git',
+                        credentialsId: 'git-cred'
+                    ]],
+                    doGenerateSubmoduleConfigurations: false,
+                    submoduleCfg: [],
+                    extensions: [[$class: 'CloneOption', depth: 0, noTags: false, shallow: false]]  // Perform a full clone
+                ])
             }
         }
+
+        stage('Verify Files in Workspace') {
+            steps {
+                sh 'ls -la'  // Verify the presence of the angular.json and other necessary files
+            }
+        }
+      
 
         stage('Git Checkout Backend') {
             steps {
