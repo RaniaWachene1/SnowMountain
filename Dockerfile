@@ -23,7 +23,7 @@ RUN ng build --configuration production
 FROM nginx:latest
 
 # Copy the built Angular app from the previous stage to Nginx's web root directory
-COPY --from=build /app/dist/snowMountain /usr/share/nginx/html
+COPY --from=build /app/dist/gh-front-end /usr/share/nginx/html
 
 # Copy custom Nginx configuration
 COPY src/nginx/etc/conf.d/default.conf /etc/nginx/conf.d/default.conf
