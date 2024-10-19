@@ -12,11 +12,15 @@ pipeline {
         NEXUS_DOCKER_REPO = '192.168.80.142:5000'
         IMAGE_NAME = 'stationski'
     }
-
+  stage('Clean Workspace') {
+            steps {
+                cleanWs()  // Clean the workspace before starting the job
+            }
+        }
     stages {
         stage('Git Checkout Frontend') {
             steps {
-                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/RaniaWachene1/SnowMountain.git'
+                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/RaniaWachene1/SnowMountain.git', depth: 0
             }
         }
 
