@@ -41,14 +41,15 @@ pipeline {
             }
         }
     
- stage(' Frontend -  Build') {
-            steps {
-                dir('Station_Ski') {  // Navigate to the directory with package.json
-                   sh 'npm install'
-                sh 'ng build --prod' // Install dependencies
-                }
-            }
+ stage('Frontend Build') {
+    steps {
+        dir('') {  // Navigate to the correct directory (root in this case)
+            sh 'npm install'
+            sh 'ng build --configuration production'  // Replace --prod with the newer configuration flag
         }
+    }
+}
+
  
 
         stage('Backend -  Compile') {
