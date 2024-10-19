@@ -29,22 +29,15 @@ pipeline {
     
 
 
-stage('Install Frontend Dependencies') {
-    steps {
-        dir('Station_Ski/Station_Ski') {  // Change to correct directory where package.json is located
-            sh 'npm init'  // Install frontend dependencies
-        }
-    }
-}
-
-
-        stage('Build Frontend') {
+   stage('Build') {
             steps {
-                sh 'npm run build'  // Build the frontend
+                sh 'npm install'
+                sh 'ng build --prod'
             }
         }
 
-        stage('Backend - Compile') {
+
+        stage('Backend -  Compile') {
             steps {
                 sh "mvn clean compile"
             }
