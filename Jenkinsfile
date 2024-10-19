@@ -247,17 +247,7 @@ pipeline {
         }
       
 
-          // Docker Compose 
-        stage('Docker Compose ') {
-            steps {
-                dir('backend') {
-                    script {
-                        sh 'docker-compose down || true'
-                        sh 'docker-compose up -d'
-                    }
-                }
-            }
-        }
+   
     }
 
     post {
