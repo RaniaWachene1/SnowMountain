@@ -208,28 +208,33 @@ pipeline {
             }
         }
 
-        // Stage to push the Docker image to the registry
-        stage('Push Docker Image') {
+   
+        // Frontend - Build & Tag Docker Image
+        stage('Frontend - Build & Tag Docker Image') {
             steps {
-                dir('frontend') {  // Ensure you're in the frontend directory
+                dir('frontend') {
                     script {
                         withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                            // Push the Docker image to the registry
+                            sh "docker build -t raniawachene/snowmountain:latest ."
+                        }
+                    }
+                }
+            }
+        }
+
+        // Frontend - Push Docker Image
+        stage('Frontend - Push Docker Image') {
+            steps {
+                dir('frontend') {
+                    script {
+                        withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
                             sh "docker push raniawachene/snowmountain:latest"
                         }
                     }
                 }
             }
         }
-            steps {
-                dir('frontend') {
-                script {
-                
-                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                        sh "docker push raniawachene/snowmountain:latest"
-                    }
-                }
-            }
+      
 
           // Docker Compose 
         stage('Docker Compose ') {
