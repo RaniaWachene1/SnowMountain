@@ -180,17 +180,7 @@ pipeline {
             }
         }
 
-        // Docker Compose Backend & MySQL
-        stage('Docker Compose Backend & MySQL') {
-            steps {
-                dir('backend') {
-                    script {
-                        sh 'docker-compose down || true'
-                        sh 'docker-compose up -d'
-                    }
-                }
-            }
-        }
+      
 
         // Frontend Build
         stage('Frontend - Build') {
@@ -199,6 +189,55 @@ pipeline {
                     script {
                         sh 'npm install'
                         sh 'npm run build'
+                    }
+                }
+            }
+        }
+
+        // Stage to build and tag the Docker image for the frontend
+        stage('Build & Tag Docker Image') {
+            steps {
+                dir('frontend') {  // Ensure you're in the frontend directory
+                    script {
+                        withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                            // Build and tag the Docker image
+                            sh "docker build -t raniawachene/snowmountain:latest ."
+                        }
+                    }
+                }
+            }
+        }
+
+        // Stage to push the Docker image to the registry
+        stage('Push Docker Image') {
+            steps {
+                dir('frontend') {  // Ensure you're in the frontend directory
+                    script {
+                        withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                            // Push the Docker image to the registry
+                            sh "docker push raniawachene/snowmountain:latest"
+                        }
+                    }
+                }
+            }
+        }
+            steps {
+                dir('frontend') {
+                script {
+                
+                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                        sh "docker push raniawachene/snowmountain:latest"
+                    }
+                }
+            }
+
+          // Docker Compose 
+        stage('Docker Compose ') {
+            steps {
+                dir('backend') {
+                    script {
+                        sh 'docker-compose down || true'
+                        sh 'docker-compose up -d'
                     }
                 }
             }
