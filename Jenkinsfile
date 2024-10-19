@@ -14,7 +14,7 @@ pipeline {
     }
   
     stages {
-     // Backend Checkout
+        // Backend Checkout
         stage('Git Checkout Backend') {
             steps {
                 dir('backend') {  // Checkout backend in 'backend' directory
@@ -22,62 +22,79 @@ pipeline {
                 }
             }
         }
-         stage('Git Checkout Frontend') {
+        // Frontend Checkout
+        stage('Git Checkout Frontend') {
             steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: 'main']],
-                    userRemoteConfigs: [[
-                        url: 'https://github.com/RaniaWachene1/SnowMountain.git',
-                        credentialsId: 'git-cred'
-                    ]],
-                    doGenerateSubmoduleConfigurations: false,
-                    submoduleCfg: [],
-                    extensions: [[$class: 'CloneOption', depth: 0, noTags: false, shallow: false]]  // Perform a full clone
-                ])
-            }
-        }
-
-       
-
-        stage('Backend -  Compile') {
-            steps {
-                sh "mvn clean compile"
-            }
-        }
-
-        stage('Tests - JUnit/Mockito') {
-            steps {
-                sh 'mvn test'
-            }
-        }
-
-        stage('JaCoCo Code Coverage') {
-            steps {
-                sh 'mvn jacoco:prepare-agent test jacoco:report'
-            }
-        }
-
-        stage('File System Scan') {
-            steps {
-                sh "trivy fs --format table -o trivy-fs-report.html ."
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonar') {
-                    sh """
-                        $SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.projectName=StationSki \
-                        -Dsonar.projectKey=StationSki \
-                        -Dsonar.java.binaries=target/classes \
-                        -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
-                    """
+                dir('frontend') {  // Checkout frontend in 'frontend' directory
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: 'main']],
+                        userRemoteConfigs: [[
+                            url: 'https://github.com/RaniaWachene1/SnowMountain.git',
+                            credentialsId: 'git-cred'
+                        ]],
+                        doGenerateSubmoduleConfigurations: false,
+                        submoduleCfg: [],
+                        extensions: [[$class: 'CloneOption', depth: 0, noTags: false, shallow: false]]
+                    ])
                 }
             }
         }
 
+        // Backend Compilation
+        stage('Backend - Compile') {
+            steps {
+                dir('backend') {
+                    sh "mvn clean compile"
+                }
+            }
+        }
+
+        // Backend Tests
+        stage('Tests - JUnit/Mockito') {
+            steps {
+                dir('backend') {
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        // JaCoCo Code Coverage
+        stage('JaCoCo Code Coverage') {
+            steps {
+                dir('backend') {
+                    sh 'mvn jacoco:prepare-agent test jacoco:report'
+                }
+            }
+        }
+
+        // File System Scan
+        stage('File System Scan') {
+            steps {
+                dir('backend') {
+                    sh "trivy fs --format table -o trivy-fs-report.html ."
+                }
+            }
+        }
+
+        // SonarQube Analysis
+        stage('SonarQube Analysis') {
+            steps {
+                dir('backend') {
+                    withSonarQubeEnv('sonar') {
+                        sh """
+                            $SCANNER_HOME/bin/sonar-scanner \
+                            -Dsonar.projectName=StationSki \
+                            -Dsonar.projectKey=StationSki \
+                            -Dsonar.java.binaries=target/classes \
+                            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+                        """
+                    }
+                }
+            }
+        }
+
+        // Quality Gate
         stage('Quality Gate') {
             steps {
                 script {
@@ -86,66 +103,101 @@ pipeline {
             }
         }
 
+        // OWASP Dependency Check
         stage('OWASP Dependency Check') {
             steps {
-                script {
-                    withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_API_KEY')]) {
-                        dependencyCheck additionalArguments: '''
-                            --scan ./ \
-                            --format ALL \
-                            --out . \
-                            --prettyPrint \
-                            --nvdApiKey ${NVD_API_KEY}
-                        ''', odcInstallation: 'DC'
-                        dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                dir('backend') {
+                    script {
+                        withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_API_KEY')]) {
+                            dependencyCheck additionalArguments: '''
+                                --scan ./ \
+                                --format ALL \
+                                --out . \
+                                --prettyPrint \
+                                --nvdApiKey ${NVD_API_KEY}
+                            ''', odcInstallation: 'DC'
+                            dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                        }
                     }
                 }
             }
         }
+
+        // Publish To Nexus
         stage('Publish To Nexus') {
             steps {
-                withMaven(globalMavenSettingsConfig: 'global-settings', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
-                    sh "mvn deploy"
-                }
-            }
-        }
-        stage('Build & Tag Docker Image') {
-            steps {
-                script {
-                    sh "docker build -t ${NEXUS_DOCKER_REPO}/${IMAGE_NAME}:latest ."
-                }
-            }
-        }
-
-        stage('Login to Nexus Docker Registry') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'nexus-docker-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        sh "echo $PASS | docker login ${NEXUS_DOCKER_REPO} -u $USER --password-stdin"
+                dir('backend') {
+                    withMaven(globalMavenSettingsConfig: 'global-settings', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
+                        sh "mvn deploy"
                     }
                 }
             }
         }
 
-        stage('Push Docker Image to Nexus') {
+        // Build & Tag Docker Image
+        stage('Build & Tag Docker Image') {
             steps {
-                script {
-                    sh "docker push ${NEXUS_DOCKER_REPO}/${IMAGE_NAME}:latest"
+                dir('backend') {
+                    script {
+                        sh "docker build -t ${NEXUS_DOCKER_REPO}/${IMAGE_NAME}:latest ."
+                    }
                 }
             }
         }
 
-        stage('Docker Image Scan') {
+        // Login to Nexus Docker Registry
+        stage('Login to Nexus Docker Registry') {
             steps {
-                sh "trivy image --timeout 15m --scanners vuln --format table -o trivy-image-report.html ${NEXUS_DOCKER_REPO}/${IMAGE_NAME}:latest"
+                dir('backend') {
+                    script {
+                        withCredentials([usernamePassword(credentialsId: 'nexus-docker-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                            sh "echo $PASS | docker login ${NEXUS_DOCKER_REPO} -u $USER --password-stdin"
+                        }
+                    }
+                }
             }
         }
 
+        // Push Docker Image to Nexus
+        stage('Push Docker Image to Nexus') {
+            steps {
+                dir('backend') {
+                    script {
+                        sh "docker push ${NEXUS_DOCKER_REPO}/${IMAGE_NAME}:latest"
+                    }
+                }
+            }
+        }
+
+        // Docker Image Scan
+        stage('Docker Image Scan') {
+            steps {
+                dir('backend') {
+                    sh "trivy image --timeout 15m --scanners vuln --format table -o trivy-image-report.html ${NEXUS_DOCKER_REPO}/${IMAGE_NAME}:latest"
+                }
+            }
+        }
+
+        // Docker Compose Backend & MySQL
         stage('Docker Compose Backend & MySQL') {
             steps {
-                script {
-                    sh 'docker-compose down || true' // Stops any previous containers
-                    sh 'docker-compose up -d' // Starts MySQL and backend services
+                dir('backend') {
+                    script {
+                        sh 'docker-compose down || true'
+                        sh 'docker-compose up -d'
+                    }
+                }
+            }
+        }
+
+        // Frontend Build
+        stage('Frontend - Build') {
+            steps {
+                dir('frontend') {
+                    script {
+                        sh 'npm install'
+                        sh 'npm run build'
+                    }
                 }
             }
         }
