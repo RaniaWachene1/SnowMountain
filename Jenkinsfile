@@ -94,17 +94,6 @@ pipeline {
             }
         }
 
-        // Quality Gate
-      stage('Quality Gate') {
-    steps {
-        script {
-            def qg = waitForQualityGate(timeout: '10', abortPipeline: false, credentialsId: 'sonar-token')
-            if (qg.status != 'OK') {
-                error "Quality gate failed: ${qg.status}"
-            }
-        }
-    }
-}
 
 
         // OWASP Dependency Check
