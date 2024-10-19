@@ -35,11 +35,7 @@ pipeline {
             }
         }
 
-        stage('Verify Files in Workspace') {
-            steps {
-                sh 'ls -la'  // Verify the presence of the angular.json and other necessary files
-            }
-        }
+     
       
 
         stage('Git Checkout Backend') {
@@ -51,7 +47,7 @@ pipeline {
     
  stage('Install Frontend Dependencies') {
             steps {
-                dir('Station_Ski/Station_Ski') {  // Navigate to the directory with package.json
+                dir('Station_Ski') {  // Navigate to the directory with package.json
                    sh 'npm install'
                 sh 'ng build --prod' // Install dependencies
                 }
