@@ -10,11 +10,16 @@ pipeline {
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
         NEXUS_DOCKER_REPO = '192.168.80.142:5000'
-        IMAGE_NAME = 'stationski'
+        IMAGE_NAME = 'snowMountain'
     }
   
     stages {
-   
+    stage('Git Checkout Backend') {
+            steps {
+                git branch: 'RaniaWachene', credentialsId: 'git-cred', url: 'https://github.com/nada176/Devops.git'
+
+            }
+        }
          stage('Git Checkout Frontend') {
             steps {
                 checkout([
@@ -31,26 +36,14 @@ pipeline {
             }
         }
 
-     
-      
-
-        stage('Git Checkout Backend') {
+            stage('Update Version') {
             steps {
-                git branch: 'RaniaWachene', credentialsId: 'git-cred', url: 'https://github.com/nada176/Devops.git'
-
+                script {
+                    def version = "1.0.0.${env.BUILD_NUMBER}"
+                    sh "mvn versions:set -DnewVersion=${version} -DgenerateBackupPoms=false"
+                }
             }
         }
-    
- stage('Frontend Build') {
-    steps {
-        dir('') {  // Navigate to the correct directory (root in this case)
-            sh 'npm install'
-            sh 'ng build --configuration production'  // Replace --prod with the newer configuration flag
-        }
-    }
-}
-
- 
 
         stage('Backend -  Compile') {
             steps {
@@ -114,7 +107,13 @@ pipeline {
                 }
             }
         }
-
+        stage('Publish To Nexus') {
+            steps {
+                withMaven(globalMavenSettingsConfig: 'global-settings', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
+                    sh "mvn deploy"
+                }
+            }
+        }
         stage('Build & Tag Docker Image') {
             steps {
                 script {
