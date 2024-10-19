@@ -14,10 +14,12 @@ pipeline {
     }
   
     stages {
-    stage('Git Checkout Backend') {
+     // Backend Checkout
+        stage('Git Checkout Backend') {
             steps {
-                git branch: 'RaniaWachene', credentialsId: 'git-cred', url: 'https://github.com/nada176/Devops.git'
-
+                dir('backend') {  // Checkout backend in 'backend' directory
+                    git branch: 'RaniaWachene', credentialsId: 'git-cred', url: 'https://github.com/nada176/Devops.git'
+                }
             }
         }
          stage('Git Checkout Frontend') {
