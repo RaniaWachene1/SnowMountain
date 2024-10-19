@@ -27,19 +27,15 @@ pipeline {
             }
         }
     
-stage('Verify Files in Workspace') {
-    steps {
-        sh 'pwd'  // Print the current working directory
-        sh 'ls -la'  // List files to ensure package.json is there
-    }
-}
-   stage('Build') {
+ stage('Install Frontend Dependencies') {
             steps {
-                sh 'npm install'
-                sh 'ng build --prod'
+                dir('Station_Ski') {  // Navigate to the directory with package.json
+                   sh 'npm install'
+                sh 'ng build --prod' // Install dependencies
+                }
             }
         }
-
+ 
 
         stage('Backend -  Compile') {
             steps {
