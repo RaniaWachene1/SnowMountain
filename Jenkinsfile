@@ -37,6 +37,7 @@ pipeline {
 
         stage('Verify Files in Workspace') {
             steps {
+                sh 'pwd'
                 sh 'ls -la'  // Verify the presence of the angular.json and other necessary files
             }
         }
