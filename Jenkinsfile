@@ -61,13 +61,8 @@ pipeline {
             }
         }
 
-       stage('Start SQL') {
-            steps {
-                script {
-                    sh 'docker-compose up -d mysqlDb'
-                }
-            }
-        }
+
+
         // Backend Tests
         stage('Backend Tests - JUnit/Mockito') {
             steps {
