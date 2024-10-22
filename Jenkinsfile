@@ -40,14 +40,8 @@ pipeline {
                 }
             }
         }
-         stage('Start MySQL') {
-            steps {
-                script {
-                    // Start MySQL container
-                    sh 'docker-compose up -d'
-                }
-            }
-        }
+       
+   
      stage('Update Version') {
             steps {
                 dir('backend') {  // Change to the backend directory where the POM exists
