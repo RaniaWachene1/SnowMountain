@@ -14,14 +14,7 @@ pipeline {
     }
   
     stages {
-        // Backend Checkout
-        stage('Git Checkout Backend') {
-            steps {
-                dir('backend') {  // Checkout backend in 'backend' directory
-                    git branch: 'RaniaWachene', credentialsId: 'git-cred', url: 'https://github.com/nada176/Devops.git'
-                }
-            }
-        }
+      
         // Frontend Checkout
         stage('Git Checkout Frontend') {
             steps {
@@ -41,7 +34,15 @@ pipeline {
             }
         }
        
-   
+     // Backend Checkout
+        stage('Git Checkout Backend') {
+            steps {
+                dir('backend') {  
+                    git branch: 'RaniaWachene', credentialsId: 'git-cred', url: 'https://github.com/nada176/Devops.git'
+                }
+            }
+        }
+        
      stage('Update Version') {
             steps {
                 dir('backend') {  // Change to the backend directory where the POM exists
