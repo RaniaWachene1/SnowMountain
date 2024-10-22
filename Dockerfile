@@ -17,7 +17,7 @@ RUN npm install
 COPY . .
 
 # Build the Angular application for production
-RUN ng build --configuration production
+RUN ng build --configuration production --base-href /browse/
 
 # Use a lightweight Nginx image to serve the Angular app
 FROM nginx:latest
