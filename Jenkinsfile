@@ -180,7 +180,7 @@ pipeline {
         stage('Backend - Docker Image Scan') {
             steps {
                 dir('backend') {
-                    sh "trivy image --timeout 15m --scanners vuln --format table -o trivy-image-report.html ${NEXUS_DOCKER_REPO}/${IMAGE_NAME}:latest"
+                    sh "trivy image --timeout 35m --scanners vuln --format table -o trivy-image-report.html ${NEXUS_DOCKER_REPO}/${IMAGE_NAME}:latest"
                 }
             }
         }
