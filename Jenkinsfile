@@ -200,20 +200,6 @@ pipeline {
             }
         }
 
-        // Stage to build and tag the Docker image for the frontend
-        stage('Build & Tag Docker Image') {
-            steps {
-                dir('frontend') {  // Ensure you're in the frontend directory
-                    script {
-                        withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                            // Build and tag the Docker image
-                            sh "docker build -t raniawachene/snowmountain:latest ."
-                        }
-                    }
-                }
-            }
-        }
-
    
         // Frontend - Build & Tag Docker Image
         stage('Frontend - Build & Tag Docker Image') {
