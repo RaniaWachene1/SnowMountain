@@ -8,7 +8,7 @@ import { Instructor } from '../models/instructor.model';
 })
 export class InstructorService {
 
-  private apiUrl = 'http://192.168.80.148:8089/api/instructor';  // Updated with context path /api and port 8089
+  private apiUrl = 'http://localhost:8089/api/instructor';  // Updated with context path /api and port 8089
 
   constructor(private http: HttpClient) { }
 

@@ -8,7 +8,7 @@ import { Skier } from '../models/skier.model';
 })
 export class SkierService {
 
-  private apiUrl = 'http://192.168.80.148:8089/api/skier';  // Updated with context path /api and port 8089
+  private apiUrl = 'http://localhost:8089/api/skier';  // Updated with context path /api and port 8089
 
   constructor(private http: HttpClient) { }
 
