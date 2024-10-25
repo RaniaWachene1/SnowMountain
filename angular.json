@@ -82,8 +82,7 @@
               "buildTarget": "GH_FrontEnd:build:production"
             },
             "development": {
-              "buildTarget": "GH_FrontEnd:build:development",
-              "proxyConfig": "proxy.conf.json" 
+              "buildTarget": "GH_FrontEnd:build:development"
             }
           },
           "defaultConfiguration": "development"
