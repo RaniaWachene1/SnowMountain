@@ -14,7 +14,12 @@ pipeline {
     }
   
     stages {
-      
+      stage('Clean Workspace') {
+    steps {
+        cleanWs()
+    }
+}
+
         // Frontend Checkout
         stage('Git Checkout Frontend') {
             steps {
