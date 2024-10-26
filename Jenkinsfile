@@ -42,16 +42,7 @@ pipeline {
                 }
             }
         }
-        stage('Docker Compose ') {
-            steps {
-                dir('backend') {
-                    script {
-                        sh 'docker-compose down || true'
-                        sh 'docker-compose up -d'
-                    }
-                }
-            }
-        } 
+        
      stage('Update Version') {
             steps {
                 dir('backend') {  // Change to the backend directory where the POM exists
@@ -235,7 +226,16 @@ pipeline {
                 }
             }
         }
-         
+          stage('Docker Compose ') {
+            steps {
+                dir('backend') {
+                    script {
+                        sh 'docker-compose down || true'
+                        sh 'docker-compose up -d'
+                    }
+                }
+            }
+        }
 
    
     }
