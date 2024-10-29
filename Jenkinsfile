@@ -60,11 +60,15 @@ pipeline {
 stage('Secret Scanning with GitLeaks') {
     steps {
         dir('backend') {
-            sh "docker run -v \$(pwd):/path zricethezav/gitleaks:latest detect --no-git --source='/path' --report-format json --report-path secrets-report.json"
-          
+            sh "docker run -v \$(pwd):/path zricethezav/gitleaks:latest detect --no-git --source='/path' --report-format json --report-path /path/secrets-report.json"
+            
+            // Display the report to verify it works
+            sh "ls -lh /path/secrets-report.json"
+            sh "cat /path/secrets-report.json"
         }
     }
 }
+
 
 
 
@@ -254,7 +258,7 @@ stage('Secret Scanning with GitLeaks') {
    
     }
 
- post {
+post {
     always {
         script {
             def jobName = env.JOB_NAME
@@ -283,11 +287,12 @@ stage('Secret Scanning with GitLeaks') {
                 from: 'raniawachen21@gmail.com',
                 replyTo: 'rania.wachene@esprit.tn',
                 mimeType: 'text/html',
-                attachmentsPattern: '**/dependency-check-report.xml,**/trivy-fs-report.html,**/trivy-image-report.html,**/secrets-report.json' // Added GitLeaks report
+                attachmentsPattern: '**/dependency-check-report.xml,**/trivy-fs-report.html,**/trivy-image-report.html,**/secrets-report.json'
             )
         }
-        archiveArtifacts artifacts: '**/*.xml, **/*.html, **/secrets-report.json', allowEmptyArchive: true // Archive GitLeaks report
+        archiveArtifacts artifacts: '**/*.xml, **/*.html, **/secrets-report.json', allowEmptyArchive: true
     }
 }
+
 
 }
