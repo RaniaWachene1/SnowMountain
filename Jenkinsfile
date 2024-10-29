@@ -61,10 +61,7 @@ stage('Secret Scanning with GitLeaks') {
     steps {
         dir('backend') {
             sh "docker run -v \$(pwd):/path zricethezav/gitleaks:latest detect --no-git --source='/path' --report-format json --report-path /path/secrets-report.json"
-            
-            // Display the report to verify it works
-            sh "ls -lh /path/secrets-report.json"
-            sh "cat /path/secrets-report.json"
+        
         }
     }
 }
