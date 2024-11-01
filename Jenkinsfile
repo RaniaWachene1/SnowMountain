@@ -107,28 +107,31 @@ stage('Secret Scanning with GitLeaks') {
             }
         }
 
-        // SonarQube Analysis
+
+// Backend - SonarQube Analysis
 stage('Backend - SonarQube Analysis') {
     steps {
         dir('backend') {
             withSonarQubeEnv('sonar') {
                 sh """
-                    $SCANNER_HOME/bin/sonar-scanner \
-                    -Dsonar.projectName=StationSki \
-                    -Dsonar.projectKey=StationSki \
-                    -Dsonar.java.binaries=target/classes \
-                    -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \  // Add backslash here
-                    -Dsonar.issue.ignore.multicriteria=e1,e2 \
-                    -Dsonar.exclusions=**/dependency-check-*.html \
-                    -Dsonar.issue.ignore.multicriteria.e1.ruleKey=html:S4020 \
-                    -Dsonar.issue.ignore.multicriteria.e1.resourceKey=**/dependency-check-*.html \
-                    -Dsonar.issue.ignore.multicriteria.e2.ruleKey=html:TableWithoutCaptionCheck \
+                    $SCANNER_HOME/bin/sonar-scanner \\
+                    -Dsonar.projectName=StationSki \\
+                    -Dsonar.projectKey=StationSki \\
+                    -Dsonar.java.binaries=target/classes \\
+                    -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \\
+                    -Dsonar.issue.ignore.multicriteria=e1,e2 \\
+                    -Dsonar.exclusions=**/dependency-check-*.html \\
+                    -Dsonar.issue.ignore.multicriteria.e1.ruleKey=html:S4020 \\
+                    -Dsonar.issue.ignore.multicriteria.e1.resourceKey=**/dependency-check-*.html \\
+                    -Dsonar.issue.ignore.multicriteria.e2.ruleKey=html:TableWithoutCaptionCheck \\
                     -Dsonar.issue.ignore.multicriteria.e2.resourceKey=**/dependency-check-*.html
                 """
             }
         }
     }
 }
+
+// ... [Remaining stages remain unchanged]
 
 // Add 'SonarQube Quality Gate' stage
 stage('Quality Gate') {
