@@ -48,7 +48,7 @@ pipeline {
         
      stage('Update Version') {
             steps {
-                dir('backend') {  // Change to the backend directory where the POM exists
+                dir('backend') {  
                     script {
                         def version = "1.0.0.${env.BUILD_NUMBER}"
                         sh "mvn versions:set -DnewVersion=${version} -DgenerateBackupPoms=false"
@@ -123,7 +123,12 @@ stage('Secret Scanning with GitLeaks') {
                 }
             }
         }
-
+// Add 'SonarQube Quality Gate' stage
+stage('SonarQube Quality Gate') {
+    steps {
+        waitForQualityGate abortPipeline: true
+    }
+}
 
 
         // OWASP Dependency Check
@@ -150,7 +155,9 @@ stage('Secret Scanning with GitLeaks') {
         stage('Backend - Publish To Nexus') {
             steps {
                 dir('backend') {
-                    withMaven(globalMavenSettingsConfig: 'global-settings', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
+                    withMaven(globalMavenSettingsConfig: 'global-settings', 
+                    jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', 
+                    traceability: true) {
                         sh "mvn deploy"
                     }
                 }
