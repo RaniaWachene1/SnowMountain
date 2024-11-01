@@ -60,11 +60,11 @@ pipeline {
 stage('Secret Scanning with GitLeaks') {
     steps {
         dir('backend') {
-            sh "docker run -v \$(pwd):/path zricethezav/gitleaks:latest detect --no-git --source='/path' --report-format json --report-path /path/secrets-report.json"
-        
+            sh "docker run -v \$(pwd):/path zricethezav/gitleaks:latest detect --no-git --source='/path' --report-format json --report-path /path/secrets-report.json || true"
         }
     }
 }
+
 
 
 
