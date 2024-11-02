@@ -1,5 +1,5 @@
+// environment.ts or appropriate configuration file
 export const environment = {
-    production: false,
-    googleMapsApiKey: 'AIzaSyCoVw5l-6kykFcGM5cvTNf0ccrJZio2X8U'
-  };
-  
+  production: false,
+  apiUrl: 'http://app-stationski:8089/api/'
+};
