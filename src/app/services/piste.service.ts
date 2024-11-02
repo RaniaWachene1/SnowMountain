@@ -8,8 +8,7 @@ import { Piste } from '../models/piste.model';
 })
 export class PisteService {
 
-  private apiUrl = 'http://localhost:8089/api/piste';  // Updated with context path /api and port 8089
-
+  private apiUrl = '/api/piste';
   constructor(private http: HttpClient) { }
 
   addPiste(piste: Piste): Observable<Piste> {
