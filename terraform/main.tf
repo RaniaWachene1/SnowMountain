@@ -72,7 +72,27 @@ resource "azurerm_kubernetes_cluster" "myproject_aks" {
   }
 }
 
-# Deploy Kubernetes manifests for MySQL, backend, and frontend
-resource "kubernetes_manifest" "app_deployment" {
-  manifest = yamldecode(file("${path.module}/../k8s-manifests/deployment.yaml"))
+# Kubernetes Manifests for MySQL, Backend, and Frontend
+resource "kubernetes_manifest" "mysql_deployment" {
+  manifest = yamldecode(file("${path.module}/../k8s-manifests/mysqldb-deployment.yaml"))
+}
+
+resource "kubernetes_manifest" "mysql_service" {
+  manifest = yamldecode(file("${path.module}/../k8s-manifests/mysqldb-service.yaml"))
+}
+
+resource "kubernetes_manifest" "backend_deployment" {
+  manifest = yamldecode(file("${path.module}/../k8s-manifests/backend-deployment.yaml"))
+}
+
+resource "kubernetes_manifest" "backend_service" {
+  manifest = yamldecode(file("${path.module}/../k8s-manifests/backend-service.yaml"))
+}
+
+resource "kubernetes_manifest" "frontend_deployment" {
+  manifest = yamldecode(file("${path.module}/../k8s-manifests/frontend-deployment.yaml"))
+}
+
+resource "kubernetes_manifest" "frontend_service" {
+  manifest = yamldecode(file("${path.module}/../k8s-manifests/frontend-service.yaml"))
 }
