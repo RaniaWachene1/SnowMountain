@@ -281,17 +281,19 @@ stage('Quality Gate') {
             }
         }
 
-        // Terraform Plan
-        stage('Terraform Plan') {
-            steps {
-                dir('terraform') {
-                    script {
-                        sh 'terraform plan -var="subscription_id=9b98830d-2a8d-4673-969e-b9fbbd723376" -out=tfplan
-'
-                    }
-                }
+      // Terraform Plan
+stage('Terraform Plan') {
+    steps {
+        dir('terraform') {
+            script {
+                sh '''
+                    terraform plan -var="subscription_id=9b98830d-2a8d-4673-969e-b9fbbd723376" -out=tfplan
+                '''
             }
         }
+    }
+}
+
 
         // Terraform Apply
         stage('Terraform Apply') {
