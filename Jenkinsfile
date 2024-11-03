@@ -286,7 +286,8 @@ stage('Quality Gate') {
             steps {
                 dir('terraform') {
                     script {
-                        sh 'terraform plan -out=tfplan'
+                        sh 'terraform plan -var="subscription_id=9b98830d-2a8d-4673-969e-b9fbbd723376" -out=tfplan
+'
                     }
                 }
             }

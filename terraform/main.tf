@@ -13,7 +13,7 @@ terraform {
 
 provider "azurerm" {
   features {}
-  subscription_id = "9b98830d-2a8d-4673-969e-b9fbbd723376"  # Replace with your actual subscription ID
+  subscription_id = "9b98830d-2a8d-4673-969e-b9fbbd723376"  
 }
 
 provider "kubernetes" {
