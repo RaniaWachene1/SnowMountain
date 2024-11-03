@@ -8,7 +8,7 @@ import { Registration } from '../models/registration.model';
 })
 export class RegistrationService {
 
-  private apiUrl = 'http://192.168.80.148:8089/api/registration';  // Updated with context path /api and port 8089
+  private apiUrl = '/api/piste';
 
   constructor(private http: HttpClient) { }
 

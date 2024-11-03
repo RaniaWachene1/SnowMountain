@@ -270,7 +270,49 @@ stage('Quality Gate') {
                 }
             }
         }
+   // Terraform Init
+        stage('Terraform Init') {
+            steps {
+                dir('terraform') {
+                    script {
+                        sh 'terraform init'
+                    }
+                }
+            }
+        }
 
+        // Terraform Plan
+        stage('Terraform Plan') {
+            steps {
+                dir('terraform') {
+                    script {
+                        sh 'terraform plan -out=tfplan'
+                    }
+                }
+            }
+        }
+
+        // Terraform Apply
+        stage('Terraform Apply') {
+            steps {
+                dir('terraform') {
+                    script {
+                        sh 'terraform apply -auto-approve tfplan'
+                    }
+                }
+            }
+        }
+
+        // Kubernetes Deployment
+        stage('Kubernetes Deployment') {
+            steps {
+                dir('k8s-manifests') {
+                    script {
+                        sh 'kubectl apply -f deployment.yaml'
+                    }
+                }
+            }
+        }
    
     }
 

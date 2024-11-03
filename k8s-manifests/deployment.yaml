@@ -1,0 +1,139 @@
+# MySQL Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysqldb
+  labels:
+    app: mysqldb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysqldb
+  template:
+    metadata:
+      labels:
+        app: mysqldb
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:5.7
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root"
+            - name: MYSQL_DATABASE
+              value: "stationSki"
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-storage
+          emptyDir: {}
+
+---
+# MySQL Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysqldb
+  labels:
+    app: mysqldb
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: mysqldb
+  type: ClusterIP
+
+---
+# Backend Application Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-stationski
+  labels:
+    app: app-stationski
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-stationski
+  template:
+    metadata:
+      labels:
+        app: app-stationski
+    spec:
+      containers:
+        - name: app-stationski
+          image: 192.168.80.142:5000/stationski:latest
+          ports:
+            - containerPort: 8089
+          env:
+            - name: SPRING_APPLICATION_JSON
+              value: |
+                {
+                  "spring.datasource.url" : "jdbc:mysql://mysqldb:3306/stationSki?createDatabaseIfNotExist=true",
+                  "spring.datasource.username" : "root",
+                  "spring.datasource.password" : "root",
+                  "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQL5InnoDBDialect",
+                  "spring.jpa.hibernate.ddl-auto" : "update"
+                }
+
+---
+# Backend Application Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-stationski
+  labels:
+    app: app-stationski
+spec:
+  ports:
+    - port: 8089
+      targetPort: 8089
+  selector:
+    app: app-stationski
+  type: ClusterIP
+
+---
+# Frontend Application Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: raniawachene/snowmountain:latest
+          ports:
+            - containerPort: 80
+
+---
+# Frontend Application Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  ports:
+    - port: 4200
+      targetPort: 80
+  selector:
+    app: frontend
+  type: ClusterIP
