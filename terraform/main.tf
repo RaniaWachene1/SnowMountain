@@ -18,6 +18,7 @@ terraform {
 provider "azurerm" {
   features {}
   subscription_id = "9b98830d-2a8d-4673-969e-b9fbbd723376"
+  use_cli         = true
 }
 
 provider "kubernetes" {
