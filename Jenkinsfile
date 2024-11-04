@@ -45,39 +45,7 @@ pipeline {
                 }
             }
         }
-          stage('b - Build & Tag Docker Image') {
-            steps {
-                dir('backend') {
-                    script {
-                        withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                            sh "docker build -t raniawachene/snowmountainback:latest ."
-                        }
-                    }
-                }
-            }
-        }
- stage('b - Push Docker Image') {
-            steps {
-                dir('backend') {
-                    script {
-                        withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                            sh "docker push raniawachene/snowmountainback:latest"
-                        }
-                    }
-                }
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
+       
 
      stage('Update Version') {
             steps {
@@ -304,23 +272,24 @@ stage('Quality Gate') {
             }
         }
    // Terraform Init
-        stage('Terraform Init') {
-            steps {
-                dir('terraform') {
-                    script {
-                        sh 'terraform init'
-                    }
-                }
-            }
-        }
-
-      // Terraform Plan
-stage('Terraform Plan') {
+       stage('Terraform') {
     steps {
         dir('terraform') {
             script {
+                // Check if Azure CLI is logged in
+                def isLoggedIn = sh(script: "az account show", returnStatus: true) == 0
+                if (!isLoggedIn) {
+                    echo "Azure CLI session is not authenticated. Running az login."
+                    sh 'az login --use-device-code'
+                } else {
+                    echo "Azure CLI is already authenticated."
+                }
+                
+                // Run Terraform commands
                 sh '''
+                    terraform init
                     terraform plan -var="subscription_id=9b98830d-2a8d-4673-969e-b9fbbd723376" -out=tfplan
+                    terraform apply -auto-approve tfplan
                 '''
             }
         }
@@ -328,27 +297,10 @@ stage('Terraform Plan') {
 }
 
 
-        // Terraform Apply
-        stage('Terraform Apply') {
-            steps {
-                dir('terraform') {
-                    script {
-                        sh 'terraform apply -auto-approve tfplan'
-                    }
-                }
-            }
-        }
 
-        // Kubernetes Deployment
-        stage('Kubernetes Deployment') {
-            steps {
-                dir('k8s-manifests') {
-                    script {
-                        sh 'kubectl apply -f deployment.yaml'
-                    }
-                }
-            }
-        }
+
+
+      
    
     }
 
