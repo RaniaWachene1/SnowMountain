@@ -5,9 +5,9 @@ metadata:
   labels:
     app: frontend
 spec:
+  type: LoadBalancer     # Change this to expose the service externally
   ports:
-    - port: 4200
-      targetPort: 80
+    - port: 80           # Expose the service on port 80 externally
+      targetPort: 4200   # Forward to port 4200 on the container
   selector:
     app: frontend
-  type: ClusterIP
