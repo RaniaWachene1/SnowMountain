@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: app-stationski
-          image: 192.168.80.142:5000/stationski:latest
+          image: raniawachene/snowmountainback:latest
           ports:
             - containerPort: 8089
           env:

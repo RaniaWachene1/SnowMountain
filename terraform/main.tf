@@ -8,12 +8,16 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = ">=2.11.0"
     }
+    null = {
+      source  = "hashicorp/null"
+      version = ">=3.0.0"
+    }
   }
 }
 
 provider "azurerm" {
   features {}
-  subscription_id = "9b98830d-2a8d-4673-969e-b9fbbd723376"  
+  subscription_id = "9b98830d-2a8d-4673-969e-b9fbbd723376"
 }
 
 provider "kubernetes" {
@@ -72,27 +76,24 @@ resource "azurerm_kubernetes_cluster" "myproject_aks" {
   }
 }
 
-# Kubernetes Manifests for MySQL, Backend, and Frontend
-resource "kubernetes_manifest" "mysql_deployment" {
-  manifest = yamldecode(file("${path.module}/../k8s-manifests/mysqldb-deployment.yaml"))
-}
+# Null Resource to Apply Kubernetes Manifests
+resource "null_resource" "apply_k8s_manifests" {
+  depends_on = [azurerm_kubernetes_cluster.myproject_aks]
 
-resource "kubernetes_manifest" "mysql_service" {
-  manifest = yamldecode(file("${path.module}/../k8s-manifests/mysqldb-service.yaml"))
-}
+  provisioner "local-exec" {
+    command = <<EOT
+      kubectl apply -f ../k8s-manifests/mysqldb-deployment.yaml
+      kubectl apply -f ../k8s-manifests/mysqldb-service.yaml
+      kubectl apply -f ../k8s-manifests/backend-deployment.yaml
+      kubectl apply -f ../k8s-manifests/backend-service.yaml
+      kubectl apply -f ../k8s-manifests/frontend-deployment.yaml
+      kubectl apply -f ../k8s-manifests/frontend-service.yaml
+    EOT
+  }
 
-resource "kubernetes_manifest" "backend_deployment" {
-  manifest = yamldecode(file("${path.module}/../k8s-manifests/backend-deployment.yaml"))
-}
-
-resource "kubernetes_manifest" "backend_service" {
-  manifest = yamldecode(file("${path.module}/../k8s-manifests/backend-service.yaml"))
-}
-
-resource "kubernetes_manifest" "frontend_deployment" {
-  manifest = yamldecode(file("${path.module}/../k8s-manifests/frontend-deployment.yaml"))
-}
-
-resource "kubernetes_manifest" "frontend_service" {
-  manifest = yamldecode(file("${path.module}/../k8s-manifests/frontend-service.yaml"))
+  # Optional retry in case kubectl is not immediately available
+  provisioner "local-exec" {
+    command     = "sleep 10 && kubectl get pods --all-namespaces"
+    interpreter = ["bash", "-c"]
+  }
 }

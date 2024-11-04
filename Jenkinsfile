@@ -45,7 +45,40 @@ pipeline {
                 }
             }
         }
-        
+          stage('b - Build & Tag Docker Image') {
+            steps {
+                dir('backend') {
+                    script {
+                        withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                            sh "docker build -t raniawachene/snowmountainback:latest ."
+                        }
+                    }
+                }
+            }
+        }
+ stage('b - Push Docker Image') {
+            steps {
+                dir('backend') {
+                    script {
+                        withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                            sh "docker push raniawachene/snowmountainback:latest"
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
      stage('Update Version') {
             steps {
                 dir('backend') {  
@@ -186,7 +219,7 @@ stage('Quality Gate') {
                 }
             }
         }
-
+          
         // Login to Nexus Docker Registry
         stage('Backend - Login to Nexus Docker Registry') {
             steps {
