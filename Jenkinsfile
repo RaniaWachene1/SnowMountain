@@ -295,6 +295,12 @@ stage('Quality Gate') {
         }
     }
 }
+   stage('Verify k8s Deployment') {
+            steps {
+                // Run `kubectl get pods` to check pod statuses
+                sh 'kubectl get pods --all-namespaces'
+            }
+        }
 
 
 

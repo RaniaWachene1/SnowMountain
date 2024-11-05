@@ -6,8 +6,9 @@ metadata:
     app: app-stationski
 spec:
   ports:
-    - port: 8089
-      targetPort: 8089
+    - name: http       # Add a unique name for this port
+      port: 8089       # The port exposed by the service
+      targetPort: 8089 # The container port that the service directs to
   selector:
     app: app-stationski
   type: ClusterIP
