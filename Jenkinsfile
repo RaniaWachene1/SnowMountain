@@ -295,12 +295,14 @@ stage('Quality Gate') {
         }
     }
 }
-   stage('Verify k8s Deployment') {
-            steps {
-                // Run `kubectl get pods` to check pod statuses
-                sh 'kubectl get pods --all-namespaces'
-            }
+ stage('Verify k8s Deployment') {
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'k8-cred', usernameVariable: 'KUBE_USERNAME', passwordVariable: 'KUBE_PASSWORD')]) {
+            sh 'kubectl get pods --all-namespaces'
         }
+    }
+}
+
 
 
 
